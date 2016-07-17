@@ -109,7 +109,8 @@ If all goes well you should be able to start grafana server
 ```
 Connect on port 3000
 
-To Do:
+#To Do:
+
 Secure things with password changes and such
 
 Add to script to drop differences in value of > 10 from one polling to the next. Here and there I get huge downward spikes of 20 which is impossible. Just a bad reading I think. The script should drop those.
