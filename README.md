@@ -3,6 +3,7 @@
 Just sharing my experience getting this working. Depending on your hardware and Linux distro, you experience may be different.
 
 1) Installed Arch on Raspberry Pi 3: https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+
 2) Install yaourt (aur helper): https://aur.archlinux.org/packages/yaourt/
 
 3) Install influxdb https://docs.influxdata.com/influxdb/v0.13/introduction/installation/
@@ -51,6 +52,7 @@ influx -database 'telegraf' -execute "INSERT cputemp value=$picputempf"
 
 
 Create a systemd service and timer
+
 /usr/lib/systemd/system/climatemonitor.service
 ```
 [Unit]
@@ -81,7 +83,10 @@ systemctl enable climatemonitor.timer
 systemctl status climatemonitor.timer
 ```
 
-#Build Grafana from source: http://docs.grafana.org/project/building_from_source/
+#Build Grafana from source:
+
+http://docs.grafana.org/project/building_from_source/
+
 Build Grafana backend
 ```
 export GOPATH=$(pwd)
@@ -104,7 +109,9 @@ If all goes well you should be able to start grafana server
 ```
 Connect on port 3000
 
-To go:
+To Do:
 Secure things with password changes and such
+
 Add to script to drop differences in value of > 10 from one polling to the next. Here and there I get huge downward spikes of 20 which is impossible. Just a bad reading I think. The script should drop those.
+
 Create service for grafana-server
