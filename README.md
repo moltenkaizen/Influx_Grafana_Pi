@@ -1,9 +1,17 @@
 #Climate Monitoring (Temp/Hum) on a Raspberry Pi using InfluxDB and Grafana
 
+Just sharing my experience getting this working. Depending on your hardware and Linux distro, you experience may be different.
 
-Install influxdb https://docs.influxdata.com/influxdb/v0.13/introduction/installation/
+1) Installed Arch on Raspberry Pi 3: https://archlinuxarm.org/platforms/armv8/broadcom/raspberry-pi-3
+2) Install yaourt (aur helper): https://aur.archlinux.org/packages/yaourt/
 
-#Create climate database:
+3) Install influxdb https://docs.influxdata.com/influxdb/v0.13/introduction/installation/
+In my case on Arch:
+```
+yaourt -S influxdb
+```
+
+4) Create climate database:
 
 Get influx prompt
 ```
@@ -15,7 +23,7 @@ Create database
 CREATE DATABASE "climate"
 ```
 
-Create script to grab climate data and write to db
+5) Create a script to grab climate data and write to db. This script grabs temperature and humidity from a DHT22 connected to GPIO 4. Using the Adafruit python script to grab query the sensor. I'm also reading the temp from the CPU on the Raspberry Pi CPU and save to the telegraf db.
 
 grab_n_write.sh 
 ```
@@ -71,4 +79,22 @@ Start and Enable service/timer
 systemctl start climatemonitor.timer
 systemctl enable climatemonitor.timer 
 systemctl status climatemonitor.timer
+```
+
+#Build Grafana from source: http://docs.grafana.org/project/building_from_source/
+Build Grafana backend
+```
+export GOPATH=$(pwd)
+go get github.com/grafana/grafana
+go get github.com/grafana/grafana
+cd $GOPATH/src/github.com/grafana/grafana
+go run build.go setup 
+$GOPATH/bin/godep restore && go run build.go build
+```
+Build frontend
+```
+sudo pacman -S nodejs nodejs-grunt-cli npm phantomjs
+npm install node-sass
+npm install
+grunt
 ```
