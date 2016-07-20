@@ -24,7 +24,7 @@ Create database
 CREATE DATABASE "climate"
 ```
 
-5) Create a script to grab climate data and write to db. This script grabs temperature and humidity from a DHT22 connected to GPIO 4. Using the Adafruit python script to grab query the sensor. I'm also reading the temp from the CPU on the Raspberry Pi CPU and save to the telegraf db.
+5) Create a script to grab climate data and write to db. This script grabs temperature and humidity from a DHT22 connected to GPIO 4. Using the Adafruit python script to grab query the sensor.
 
 grab_n_write.sh 
 ```
@@ -37,17 +37,12 @@ climate=$(python /usr/share/nginx/html/AdafruitDHT.py 2302 4)
 temp=$(echo $climate | cut -d":" -f1)
 hum=$(echo $climate | cut -d":" -f2)
 
-# Get Pi CPU Temp
-picputempc=$(/opt/vc/bin/vcgencmd measure_temp | cut -d "=" -f2 | cut -d"'" -f1)
-
 # Convert C to F
 picputempf=$(echo "scale=2; $picputempc*9/5+32" | bc -l)
-#picputempf=$(echo "scale=2; $(/opt/vc/bin/vcgencmd measure_temp | cut -d "=" -f2 | cut -d"'" -f1)*9/5+32" | bc -l)
 
 # Write to influxdb
 influx -database 'climate' -execute "INSERT temperature,sensor=1 value=$temp"
 influx -database 'climate' -execute "INSERT humidity,sensor=1 value=$hum"
-influx -database 'telegraf' -execute "INSERT cputemp value=$picputempf"
 ```
 
 
